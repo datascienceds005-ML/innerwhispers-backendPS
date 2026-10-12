@@ -3,15 +3,13 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-# Routers Import
+# 1. Routers Import (पुराने और नए modules)
 import finance
-import expenses
-import invoices
-import payslips
+import expenses  # <--- आपका expenses.py यहाँ import हुआ
 
 app = FastAPI(title="InnerWhispers Platform Backend")
 
-# Enable CORS
+# 2. CORS Middleware (ताकि frontend आसानी से fetch कर सके)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,13 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 1. API Routers Include
+# 3. API Routers Include
 app.include_router(finance.router)
-app.include_router(expenses.router)
-app.include_router(invoices.router)
-app.include_router(payslips.router)
+app.include_router(expenses.router)  # <--- expenses API router यहाँ attach हुआ
 
-# 2. HTML Frontend File Serving Routes
+# 4. Frontend HTML Routes
 @app.get("/")
 def serve_home():
     return FileResponse("finance.html")
@@ -39,14 +35,7 @@ def serve_budget():
 def serve_dashboard():
     return FileResponse("dashboard.html")
 
+# <--- नया route: expenses.html दिखाने के लिए --->
 @app.get("/expenses")
 def serve_expenses():
     return FileResponse("expenses.html")
-
-@app.get("/invoices")
-def serve_invoices():
-    return FileResponse("invoices.html")
-
-@app.get("/payslips")
-def serve_payslips():
-    return FileResponse("payslips.html")
